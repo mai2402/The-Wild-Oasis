@@ -1,15 +1,16 @@
 import {useForm} from "react-hook-form";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {CreateEditCabin} from "../../services/apiCabins";
-import toast from "react-hot-toast";
 import Input from "../../ui/Input";
 import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import FormRow from "../../ui/FormRow";
+import { useCreateCabin } from "./useCreateCabin";
+import { useEditCabin } from "./useEditCabin";
 
 function CreateCabinForm({cabinToEdit = {}}) {
+  const {createCabin,isCreating} =useCreateCabin()
+  const {editCabin,isEditing}=useEditCabin();
   // destructuring id and the rest of cabin values 
     const { id: editId,  ...editValues } = cabinToEdit;
     const isEditSession = Boolean(editId)
@@ -19,53 +20,23 @@ function CreateCabinForm({cabinToEdit = {}}) {
             ? editValues
             : {}
     });
-
     const {errors} = formState;
     // Initialize useQueryClient to manage query cache
-    const queryClient = useQueryClient();
+    
 
-    // Initialize useMutation for handling form submission
-    const {mutate: createCabin, isLoading: isCreating} = useMutation({
-        mutationFn: CreateEditCabin,
-        onSuccess: () => {
-            // Show success toast notification
-            toast.success("Cabin has been created successfully");
 
-            // Invalidate queries to refresh data
-            queryClient.invalidateQueries({queryKey: ["cabins"]});
-
-            // Reset form after successful mutation
-            reset();
-        },
-        onError: (err) => {
-            // Show error toast notification
-            toast.error(err.message);
-        }
-    });
-
-    const {mutate: editCabin, isLoading: isEditing} = useMutation({
-      mutationFn:({newCabinData,id})=> CreateEditCabin(newCabinData,id),
-      onSuccess: () => {
-          // Show success toast notification
-          toast.success("Cabin has been edited successfully");
-
-          // Invalidate queries to refresh data
-          queryClient.invalidateQueries({queryKey: ["cabins"]});
-
-          // Reset form after successful mutation
-          reset();
-      },
-      onError: (err) => {
-          // Show error toast notification
-          toast.error(err.message);
-      }
-  });
      const isWorking = isCreating || isEditing;
+
     // Form submit handler
     function onSubmit(data) {
       const image = typeof data.image === "string" ? data.image : data.image[0]
-    if(  isEditSession) editCabin({newCabinData:{...data,image},id:editId})
-        else createCabin({...data,image: image});
+    if(isEditSession) editCabin({newCabinData:{...data,image},id:editId}
+      ,{
+      onSuccess : reset()
+    })
+        else createCabin({...data,image: image},{
+        onSuccess : reset()
+      });
         console.log(data)
     }
 
@@ -119,20 +90,19 @@ function CreateCabinForm({cabinToEdit = {}}) {
                     disabled={isWorking}
                     type="number"
                     id="discount"
-                    defaultValue={0}
-                    {...register("discount", {required:"This field is required", validate:(value)=> value <= getValues().regularPrice || "discount should be less than regular price" })}/>
+                    {...register("discount", {validate:(value)=>  value <= getValues().regularPrice || "discount should be less than regular price" })}/>
             </FormRow>
 
             <FormRow
-                label="discription"
+                label="description"
                 error={errors
-                ?.discription
+                ?.description
                     ?.message}>
                 <Textarea
                     type="number"
-                    id="discription"
+                    id="description"
                     defaultValue=""
-                    {...register("discription",{required:"This field is required"})}/>
+                    {...register("description",{required:"This field is required"})}/>
             </FormRow>
 
             <FormRow label="Cabin photo">
