@@ -7,9 +7,10 @@ import { useUpdateSetting } from './useUpdateSetting';
 
 function UpdateSettingsForm() {
   const {isLoading, 
+    // made settings eq {} so we can destructure from an empty obj
     settings :{minBookingLength,maxBookingLength,maxGuestPerBooking,breakfastPrice}={},} = useSettings()
   const {updateSetting, isUpdating} = useUpdateSetting();
-
+  
   function handleUpdateSetting(e,field){
       const value = e.target.value;
        

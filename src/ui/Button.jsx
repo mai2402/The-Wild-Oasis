@@ -53,12 +53,14 @@ const Button = styled.button`
     border: none;
     border-radius: var(--border-radius-sm);
     box-shadow: var(--shadow-sm) ;
+    ${({ size }) => sizes[size]};
+  ${({ variation }) => variations[variation]};
 `; 
 
 Button.defaultProps={
 
-  variations: "primary",
-  size:"meduim",
+  variation: "primary",
+   size :"meduim",
 }
 
 

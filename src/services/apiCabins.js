@@ -1,4 +1,4 @@
-import {id} from "date-fns/locale";
+
 import supabase, {supabaseUrl} from "./supabase";
 
 export async function getCabins() {
@@ -24,6 +24,7 @@ export async function CreateEditCabin(newCabin,id) {
         .image
         .name}`
         .replaceAll("/", "");
+        
     const imagePath = hasImagePath
         ? newCabin.image
         : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
