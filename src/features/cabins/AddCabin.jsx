@@ -5,15 +5,17 @@ import CreateCabinForm from "./CreateCabinForm"
 
 
 function AddCabin(){
-    return <Modal>
+    return <div>
+      <Modal>      
         <Modal.Open opens="cabin-form">
            <Button>Add new Cabin</Button>
         </Modal.Open>
         <Modal.Window name="cabin-form">
             <CreateCabinForm/>
         </Modal.Window>
-    </Modal>
-}
+      </Modal>
+        </div> 
+        }
 
 // function AddCabin() {
 //     const [isOpenModal,setIsOpenModal] = useState(false)
