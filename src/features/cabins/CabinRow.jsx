@@ -1,24 +1,14 @@
 import styled from "styled-components";
-import {formatCurrency} from "../../utils/helpers"
-import CreateCabinForm from "./CreateCabinForm";
-import { useState } from "react";
-import { useDeleteCabin } from "./useDeleteCabin";
-import {useCreateCabin} from "./useCreateCabin"
-import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
-import Modal from "../../ui/Modal";
-import ConfirmDelete from "../../ui/ConfirmDelete";
+import { formatCurrency } from "../../utils/helpers"; 
+import CreateCabinForm from "./CreateCabinForm"; 
+import { useDeleteCabin } from "./useDeleteCabin"; 
+import { useCreateCabin } from "./useCreateCabin"; 
+import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2"; 
+import Modal from "../../ui/Modal"; 
+import ConfirmDelete from "../../ui/ConfirmDelete"; 
+import Table from "../../ui/Table"; 
+import Menus from "../../ui/Menus"; 
 
-const TableRow = styled.div`
-  display: grid;
-  grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
-  column-gap: 2.4rem;
-  align-items: center;
-  padding: 1.4rem 2.4rem;
-
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--color-grey-100);
-  }
-`;
 
 const Img = styled.img`
   display: block;
@@ -26,15 +16,17 @@ const Img = styled.img`
   aspect-ratio: 3 / 2;
   object-fit: cover;
   object-position: center;
-  transform: scale(1.5) translateX(-7px);
+  transform: scale(1.5) translateX(-7px); // Scales the image and adjusts its position
 `;
+
 
 const Cabin = styled.div`
   font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-grey-600);
-  font-family: "Sono";
+  font-family: "Sono"; // Specific font family used for the cabin name
 `;
+
 
 const Price = styled.div`
   font-family: "Sono";
@@ -44,57 +36,91 @@ const Price = styled.div`
 const Discount = styled.div`
   font-family: "Sono";
   font-weight: 500;
-  color: var(--color-green-700);
+  color: var(--color-green-700); 
 `;
 
+function CabinRow({ cabin }) {
+  const { isDeleting, deleteCabin } = useDeleteCabin(); // Hook to handle the deletion state and function
+  const { isCreating, createCabin } = useCreateCabin(); // Hook to handle the creation state and function
 
-function CabinRow({cabin}) {
-  const {isDeleting, deleteCabin} = useDeleteCabin();
-  const {isCreating, createCabin} = useCreateCabin()
-  const {id :cabinId,name,maxCapacity,regularPrice,discount,image,description}= cabin;
+  // Destructuring the cabin object to get relevant properties
+  const { id: cabinId, name, maxCapacity, regularPrice, discount, image, description } = cabin;
 
-
-  function handleDuplicateCabin () {
+  // Function to handle duplicating a cabin with the same data, but with a different name
+  function handleDuplicateCabin() {
     createCabin({
-      name : `copy of ${name}`,
-      maxCapacity,regularPrice,discount,image,description
-    })
-
+      name: `copy of ${name}`, // The duplicated cabin will have "copy of" prefixed to the original name
+      maxCapacity,
+      regularPrice,
+      discount,
+      image,
+      description,
+    });
   }
 
-  return <>
-  <TableRow role="row">
-    <img src={image} alt={name} />
-    <Cabin>{name}</Cabin>
-    <div>Fits Up To {maxCapacity} Guests</div>
-    <Price>{formatCurrency(regularPrice)}</Price>
-   {discount ? <Discount>{formatCurrency(discount)}</Discount>: <span>&mdash;</span>}
-       <div>
-        <button disabled ={isCreating}  onClick={handleDuplicateCabin}><HiSquare2Stack/></button>
-         <Modal>
-          <Modal.Open opens="edit">
-             <button><HiPencil/></button>
-          </Modal.Open>
-          <Modal.Window name="edit">
-             <CreateCabinForm cabinToEdit={cabin}/>
-          </Modal.Window>
+  return (
+    <>
+      {/* Row representing a cabin in the table */}
+      <Table.Row>
+        {/* Cabin image */}
+        <Img src={image} alt={name} />
+        
+        {/* Cabin name */}
+        <Cabin>{name}</Cabin>
+        
+        {/* Maximum capacity information */}
+        <div>Fits Up To {maxCapacity} Guests</div>
+        
+        {/* Regular price displayed in a formatted manner */}
+        <Price>{formatCurrency(regularPrice)}</Price>
+        
+        {/* Display discount price if available, otherwise display a dash */}
+        {discount ? <Discount>{formatCurrency(discount)}</Discount> : <span>&mdash;</span>}
+        
+        {/* Menu with actions like duplicate, edit, and delete */}
+        <div>
+          <Modal>
+            <Menus.Menu>
+              {/* Toggle button for opening the menu */}
+              <Menus.Toggle id={cabinId} />
 
-          <Modal.Open opens="delete">
-          <button><HiTrash/></button>
-          </Modal.Open>
-          <Modal.Window name="delete">
-             
-             <ConfirmDelete 
-             resourceName="cabins"
-             disabled={isDeleting}
-             onConfirm={()=>deleteCabin(cabinId)}
-             />
-          </Modal.Window>
-         </Modal>
-       </div>
-  </TableRow>
- 
-  </>
+              {/* List of menu items */}
+              <Menus.List id={cabinId}>
+                {/* Duplicate button */}
+                <Menus.Button onClick={handleDuplicateCabin} icon={<HiSquare2Stack />}>
+                  Duplicate
+                </Menus.Button>
+
+                {/* Edit button opens the CreateCabinForm modal */}
+                <Modal.Open opens="edit">
+                  <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+                </Modal.Open>
+
+                {/* Delete button opens the ConfirmDelete modal */}
+                <Modal.Open opens="delete">
+                  <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+                </Modal.Open>
+              </Menus.List>
+
+              {/* Modal window for editing the cabin */}
+              <Modal.Window name="edit">
+                <CreateCabinForm cabinToEdit={cabin} />
+              </Modal.Window>
+
+              {/* Modal window for confirming cabin deletion */}
+              <Modal.Window name="delete">
+                <ConfirmDelete
+                  resourceName="cabins" // Resource name used in the confirm delete dialog
+                  disabled={isDeleting} // Disable the button while the deletion process is ongoing
+                  onConfirm={() => deleteCabin(cabinId)} // Trigger deletion upon confirmation
+                />
+              </Modal.Window>
+            </Menus.Menu>
+          </Modal>
+        </div>
+      </Table.Row>
+    </>
+  );
 }
 
-export default CabinRow
+export default CabinRow;
