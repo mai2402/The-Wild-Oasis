@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { useCabins } from "../features/cabins/useCabins";
 import { useSearchParams } from "react-router-dom";
+import { useURL } from "../features/cabins/useURL";
 
 const StyledFilter = styled.div`
   border: 1px solid var(--color-grey-100);
@@ -38,23 +39,26 @@ const FilterButton = styled.button`
 
 
 function Filter({filterField,options}) {
- const [searchParams,setSearchParams] = useSearchParams()
- const currentFilter = searchParams.get(filterField) || options.at(0).value;
+//  const [searchParams,setSearchParams] = useSearchParams()
+//  const currentFilter = searchParams.get(filterField) || options.at(0).value;
 
 
 
 
- function handleFilteredCabins(value){
-      searchParams.set(filterField,value)
-      setSearchParams(searchParams);
- }
+//  function handleFilteredCabins(value){
+//       searchParams.set(filterField,value)
+//       setSearchParams(searchParams);
+//  }
+
+const {searchParams,handleChange} = useURL(filterField)
+const currentFilter = searchParams.get(filterField) || options?.at(0).value;
 
   return (
     <StyledFilter>
      {options.map((option)=><FilterButton 
-                   active={option.value === currentFilter}
+                   $active={option.value === currentFilter} // $ added to prevent passing props directly to the DOM
                    key={option.label}
-                   onClick={()=>handleFilteredCabins(option.value)}
+                   onClick={()=>handleChange(option.value)}
                    disabled={option.value === currentFilter}>
                   {option.label}</FilterButton>)}
     </StyledFilter>
