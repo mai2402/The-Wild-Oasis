@@ -9,6 +9,7 @@ function CabinTable() {
 
   const { isLoading, cabins } = useCabins();
   
+ 
   // Access search params from the URL for filtering and sorting
   const [searchParams] = useSearchParams();
   
@@ -17,6 +18,7 @@ function CabinTable() {
   
   // Initialize an empty array for filtered cabins to avoid undefined errors
   let filteredCabin = [];
+
 
   // Ensure cabins data is available before filtering
   if (cabins) {
@@ -40,7 +42,7 @@ function CabinTable() {
 
   // Display a spinner while data is loading
   if (isLoading) return <Spinner />;
-  
+  if (!cabins.length) <Empty resourceName="cabins"/> 
   
   return (
     <Menus>
