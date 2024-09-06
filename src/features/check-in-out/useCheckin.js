@@ -10,9 +10,11 @@ function useCheckin() {
    const navigate = useNavigate();
    const{mutate :checkin  , isLoading: isCheckingIn}= useMutation({
 
-    mutationFn : (bookingId)=> updateBooking(bookingId,{
+    mutationFn : ({bookingId,breakfastData})=> updateBooking(bookingId,{
         isPaid : true,
-        status: "checked-in"
+        status: "checked-in",
+        ...breakfastData,
+        
     }),
 
     onSuccess: (data)=>{
