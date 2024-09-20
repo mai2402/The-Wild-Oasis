@@ -9,6 +9,6 @@ export function useCabins(){
         queryKey : ['cabins'],
         queryFn: getCabins
       })
-       console.log(cabins,"datas")
+       
       return {isLoading,error,cabins}
 }
