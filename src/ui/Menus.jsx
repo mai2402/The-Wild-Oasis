@@ -89,6 +89,7 @@ function Toggle({ id }) {
   const { close, open, openId, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation()
     // Calculate the position of the menu based on button's position
     const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
@@ -109,7 +110,7 @@ function Toggle({ id }) {
 // List component that renders menu options if the current menu is open
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
-  const { ref } = useOutSideClick(close); // Close the menu when clicking outside
+  const { ref } = useOutSideClick(close,false); // Close the menu when clicking outside
 
   if (openId !== id) return null; // Don't render if this menu isn't open
 

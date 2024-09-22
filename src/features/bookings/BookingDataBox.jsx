@@ -128,7 +128,7 @@ function BookingDataBox({ booking }) {
             {numNights} nights in Cabin <span>{cabinName}</span> 
           </p>
         </div>
-        <div>{numOfGuests} <span>{numOfGuests >1 ? "guests": "guest"}</span></div>
+        {/* <div>{numOfGuests} <span>{numOfGuests >1 ? "guests": "guest"}</span></div> */}
 
         <p>
           {format(new Date(startDate), "EEE, MMM dd yyyy")} (
