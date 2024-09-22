@@ -151,7 +151,7 @@ function DurationChart({confirmedStays}) {
              outerRadius={110} cx="50%" cy="50%"
              paddingAngle={3}>
 
-            {data.map((entry)=>
+            {data?.map((entry)=>
             <Cell 
             fill={entry.color}
             stroke={entry.color}

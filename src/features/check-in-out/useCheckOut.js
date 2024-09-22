@@ -2,11 +2,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import toast from "react-hot-toast"
 import { updateBooking } from "../../services/apiBookings";
+import { useNavigate } from "react-router-dom";
 
 
 
 function useCheckOut() {
    const queryClient = useQueryClient()
+   const navigate = useNavigate()
 
    const{mutate :checkOut  , isLoading: isCheckingOut}= useMutation({
 
@@ -17,8 +19,9 @@ function useCheckOut() {
     onSuccess: (data)=>{
         toast.success(`Booking ${data.id} successfully checked-out`)
          queryClient.invalidateQueries({
-            queryKey:["bookings"]
+            queryKey:["bookings",data]
          })
+         navigate("/")
     },
 
     onError :()=>{

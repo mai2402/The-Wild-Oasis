@@ -108,7 +108,7 @@ function BookingDataBox({ booking }) {
     startDate,
     endDate,
     numNights,
-    numGuests,
+    numOfGuests,
     cabinPrice,
     extrasPrice,
     totalPrice,
@@ -118,16 +118,17 @@ function BookingDataBox({ booking }) {
     guests: { fullName: guestName, email, country, countryFlag, nationalID },
     cabins: { name: cabinName },
   } = booking;
-
+ 
   return (
     <StyledBookingDataBox>
       <Header>
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {numNights} nights in Cabin <span>{cabinName}</span> 
           </p>
         </div>
+        <div>{numOfGuests} <span>{numOfGuests >1 ? "guests": "guest"}</span></div>
 
         <p>
           {format(new Date(startDate), "EEE, MMM dd yyyy")} (
@@ -142,7 +143,7 @@ function BookingDataBox({ booking }) {
         <Guest>
           {countryFlag && <Flag src={countryFlag} alt={`Flag of ${country}`} />}
           <p>
-            {guestName} {numGuests > 1 ? `+ ${numGuests - 1} guests` : ""}
+            {guestName} {numOfGuests > 1 ? `+ ${numOfGuests - 1} guests` : ""}
           </p>
           <span>&bull;</span>
           <p>{email}</p>
